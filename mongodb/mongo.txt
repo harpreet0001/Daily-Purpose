@@ -1,0 +1,9 @@
+﻿------To take bacup---------
+
+mongodump -d databasename -o /home/megatanws/public_html/web/mongodbbackup
+
+
+-----to import databse-------
+
+mongorestore --db databasename /home/megatanws/public_html/web/mongodbbackup
+

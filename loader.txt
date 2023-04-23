@@ -1,0 +1,37 @@
+style:
+
+.cs_loader {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.cs_loader img {
+
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+html:
+
+<div class="cs_loader">
+  <img src="https://crm.rateshop.ca/assets/images/loadergif.gif">
+</div>
+
+
+javascript:
+
+function callLoader() {
+$('.cs_loader').css('display', 'block');
+}
+function endLoader() {
+    $('.cs_loader').css('display', 'none');
+}

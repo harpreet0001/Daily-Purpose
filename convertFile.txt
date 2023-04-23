@@ -1,0 +1,263 @@
+<?php 
+
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class FileController extends Controller
+{
+	public function convertImportfile(Request $request)
+    {
+       
+        phpinfo();
+         dump($request->file('file'));
+         dump($request->file('file')->getSize());
+         die();
+
+        $time = Carbon::now();
+        $user_id = Auth::id();
+        $myfile = $request->file('myfile');
+        $temp = base_path();
+        $proposalName =  $request->tempname;
+
+        if ($proposalName == "") {
+            Session::flash('error', "Document name is empty");
+            return redirect('import_esignature_proposal');
+        }
+
+        if ($myfile == "") {
+            Session::flash('error', "Select a document first");
+            return redirect('import_esignature_proposal');
+        }
+
+        if ($proposalName == ""  && $myfile == "") {
+            Session::flash('error', "Enter a document name and Select a document first");
+            return redirect('import_esignature_proposal');
+        }
+
+
+
+        $extension1 = $myfile->getClientOriginalExtension();
+        $originalname = $myfile->getClientOriginalName();
+        $fileSize = $myfile->getClientSize();
+        if($fileSize > 3145728){
+            Session::flash('error', "Upto 3MB file size is allowed");
+            return redirect('import_esignature_proposal');
+        }
+
+        if ($extension1 != 'pdf' && $extension1 != 'docx' && $extension1 != 'pptx') {
+
+            Session::flash('error', "Only .docx, .pdf formats are allowed");
+            return redirect('import_esignature_proposal');
+        }
+
+        $proposalObject = new ProposalModal($proposalName, "", "", "", "");
+        $proposalsUniqueName = $proposalObject->getUniqueProposalName();
+
+
+        // if template Name is already exist
+        if ($proposalsUniqueName > 0) {
+            Session::flash('error', "Name already exists");  // Sonam Khan 12-03-2020
+            return redirect('import_esignature_proposal');
+        } else {
+
+            if ($extension1 == 'pdf') {
+                $file_name_40 = Str::random(40) . '.pdf';
+                $path = $request->file('myfile')->storeAs('public/allPdfTemplates', $file_name_40);
+                $filepdf = fopen(Storage::disk('local')->path($path), "r");
+                if ($filepdf) {
+                    $line_first = fgets($filepdf);
+                    fclose($filepdf);
+                } else {
+                    echo "error opening the file.";
+                }
+                preg_match_all('!\d+!', $line_first, $matches);
+                $pdfversion = implode('.', $matches[0]);
+                if ($pdfversion > "1.4") {
+                    $file_name_40_replace = Str::random(40) . '.pdf';
+                    $path_replaced = str_replace($file_name_40, $file_name_40_replace, $path);
+                    shell_exec("ghostscript -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=" . Storage::disk('local')->path($path_replaced) . " " . Storage::disk('local')->path($path));
+                    File::delete(Storage::disk('local')->path($path));
+                    $path = $path_replaced;
+                }
+                $url_arr = explode('/', $path);
+                $random_generated_file_name = end($url_arr);
+                $sub_id = substr($random_generated_file_name, 0, 6);
+                $proposal_id = strtoupper($sub_id);
+
+                $getfileName = explode("allPdfTemplates/", $path);
+                $path_parts = pathinfo($getfileName[1]);
+                $filenameNoExtension   = $path_parts['filename'];
+
+                // $html_fileName='p'.$user_id."_".$proposal_id;
+                $pro_filename =   $filenameNoExtension . ".pdf";
+                // saveUserActivity(Auth::user()->id, config('activityconstants.create_proposal'));
+                echo $this->savePDFandView($path, $extension1, $proposalName, $pro_filename, $user_id, $time);
+            }
+
+
+
+            if ($extension1 == 'docx') {
+
+                $path = storage_path($myfile->store('public/allPdfTemplates'));
+                //dd($path);
+                $newPath =  explode("storage/", $path);
+                $newPath  =     $newPath[0] . "storage/app/" . $newPath[1];
+                $removeExtension = explode(".", $newPath);
+
+                $getFileNameTem =  explode("allPdfTemplates/", $newPath);
+                // $g =  explode(".", $getFileNameTem[1]);
+
+                $getFileNameWithoutExtension    = pathinfo($getFileNameTem[1]);
+
+                // echo $newPath[1];
+                $actualFileName = $getFileNameWithoutExtension['filename'] . ".docx";
+
+
+                $getfileName = explode("allPdfTemplates/", $path);
+                $path_parts = pathinfo($getfileName[1]);
+                $filenameNoExtension   = $path_parts['filename'];
+
+                $pro_filename = $filenameNoExtension . ".docx";
+
+                $newPdfPath = $removeExtension[0] . ".pdf";
+
+
+                // Describe parameters for converter
+                $parameters = (new UnoconvParameters())
+                    // ->setInputFile(/var/www/html/proposalways-liveionos/)
+                    ->setInputFile($newPath)
+                    // Result file name
+                    ->setOutputFile($newPdfPath)
+                    // Format of result document is docx
+                    ->setOutputFormat(Format::FORMAT_TEXT_PDF);
+
+
+                // Create converter
+                $converter = new Converter();
+
+                // Run converter
+                $converter->convert($parameters);
+
+                $getNewPath1 =  explode('public', $newPdfPath);
+                $getNewPath =  "public" . $getNewPath1[1];
+
+
+                $url_arr = explode('/', $path);
+                $random_generated_file_name = end($url_arr);
+                $sub_id = substr($random_generated_file_name, 0, 6);
+                $proposal_id = strtoupper($sub_id);
+
+
+                $sub_id = substr($removeExtension[0], 0, 6);
+                $final_id = strtoupper($sub_id);
+
+                $setpath = $temp . "/storage/app/public/allPdfTemplates";
+                chdir($setpath);
+                $renameFileFromAllPDF = "mv " . $getFileNameTem[1] . " " .   $actualFileName;
+                exec($renameFileFromAllPDF . "  2>&1", $output);
+                // saveUserActivity(Auth::user()->id, config('activityconstants.create_proposal'));
+                echo $this->savePDFandView($getNewPath, $extension1, $proposalName, $pro_filename, $user_id, $time);
+            }
+
+            // start pptx functionality
+            //  if($extension1 == 'pptx'){
+            //      // echo "This is pptx file uploaded";
+            //  $path = storage_path($myfile->store('public/allPdfTemplates'));    
+            //  //dd($path);
+            //  $newPath =  explode("storage/", $path);
+            //  $newPath  =     $newPath[0]."storage/app/".$newPath[1];
+            //  $removeExtension = explode(".",$newPath);
+
+            //  $getFileNameTem =  explode("allPdfTemplates/", $newPath);
+            //  // $g =  explode(".", $getFileNameTem[1]);
+
+            //  $getFileNameWithoutExtension    = pathinfo($getFileNameTem[1]);
+
+            //  // echo $newPath[1];
+            //  $actualFileName = $getFileNameWithoutExtension['filename'].".pptx";     
+
+            //  $getfileName = explode("allPdfTemplates/",$path);
+            //  $path_parts = pathinfo($getfileName[1]);
+            //  $filenameNoExtension   = $path_parts['filename'];
+
+            //  $newPdfPath = $removeExtension[0].".pdf";
+
+
+            //       // Describe parameters for converter
+            //  $parameters = (new UnoconvParameters())                   
+            //      // ->setInputFile(/var/www/html/proposalways-liveionos/)
+            //      ->setInputFile($newPath)
+            //      // Result file name
+            //      ->setOutputFile($newPdfPath)
+            //      // Format of result document is docx
+            //      ->setOutputFormat(Format::FORMAT_PRESENTATION_PDF);
+
+
+            // // Create converter
+            //  $converter = new Converter();
+
+            //  // Run converter
+            //  $converter->convert($parameters);   
+
+            //  $getNewPath1 =  explode('public',$newPdfPath);
+            //  $getNewPath =  "public".$getNewPath1[1];
+
+
+            //  $url_arr = explode('/',$path);
+            //  $random_generated_file_name = end($url_arr);
+            //  $sub_id = substr($random_generated_file_name, 0, 6);
+            //  $template_id = strtoupper($sub_id);
+
+
+            //  $sub_id = substr($removeExtension[0], 0, 6);
+            //  $final_id = strtoupper($sub_id);
+
+
+            // DB::table('templates')->insert([
+            //    'name' => $templateName, 
+            //    'template_file_name' => $filenameNoExtension.".pptx",
+            //    'users_id' => $user_id, 
+            //    'parent_id' => $user_id,
+            //    'template_id' => $template_id,
+            //    'created_at' => $time,
+            //    'updated_at' => $time
+            //  ]);
+
+
+
+            //  $label_id_get = DB::table('labels')   
+            //            ->select('id')  
+            //            ->where(['type' => 'Default'])
+            //            ->where(['created_by' => Auth::id()])   
+            //            ->first();
+
+            // $template_id_get = DB::table('templates')  
+            //            ->select('id')  
+            //            ->where(['template_id' => $template_id])
+            //            ->where(['users_id' => Auth::id()]) 
+            //            ->first();
+
+            //  DB::table('label_templates')->insert([
+            //    'label_id' => $label_id_get->id, 
+            //    'template_id' => $template_id_get->id,
+            //    'created_at' => $time,
+            //    'updated_at' => $time
+            //  ]);
+
+
+            //  $setpath = $temp."/storage/app/public/allPdfTemplates";
+            // chdir($setpath); 
+            //  $renameFileFromAllPDF = "mv ". $getFileNameTem[1] ." ".   $actualFileName; 
+            //  exec(  $renameFileFromAllPDF."  2>&1", $output );
+
+            // echo $this->savePDFandView($getNewPath, $extension1);
+            // }
+            // End pptx functionality
+
+
+
+        }
+    }
+}

@@ -1,0 +1,5 @@
+sudo service php7.4-mongodb
+/etc/init.d/apache2 restart
+
+php.ini
+extension=mongodb.so

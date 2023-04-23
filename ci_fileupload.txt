@@ -1,0 +1,984 @@
+<?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+<style type="text/css">
+  iframe#iframe01 {
+      width: 100%;
+      height: 100%;
+  }
+  div#myModal7 {
+      padding-right: 0!important;
+  }
+  div#myModal7 .modal-dialog {
+      width: 100%;
+      margin: 0;
+      height: 100vh;
+  }
+
+  #myModal7 .modal-content {
+      height: 100%;
+      border: 0;
+      border-radius: 0;
+  }
+        .notify-agent {
+      padding-top: 30px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+  }
+
+  .notify-agent p {
+      font-size: 24px;
+      color: red;
+  }
+        body{
+          font-family: 'Roboto',san-sarif;
+        }
+       #drop-zone {
+       width: 100%;
+       min-height: 100px;
+       max-height:130px;
+       margin:8px 0px;
+       overflow-x:hidden;
+       border: 1px dashed rgba(0, 0, 0, .3);
+       border-radius: 5px;
+       text-align: center;
+       position: relative;
+       font-size: 20px;
+       color: #7E7E7E;
+     }
+     #drop-zone p{
+       font-size:12px;
+       margin-top:10px;
+     }
+     #drop-zone input {
+       position: absolute;
+       cursor: pointer;
+       left: 0px !important;
+       top: 0px !important;
+       opacity: 0;
+       height:100%;
+       width:100%;
+     }
+     /*Important*/
+
+     #drop-zone.mouse-over {
+       border: 3px dashed rgba(0, 0, 0, .3);
+       color: #7E7E7E;
+     }
+
+
+
+
+
+
+
+  body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+  }
+
+
+    .navbar-brand{
+      height: auto;
+    }
+    header {
+      border-bottom: 1px solid #ccc;
+  }
+  .navbar-brand>img {
+      display: block;
+      width: 160px;
+  }
+  .table_outer{
+    padding: 70px 0;
+    flex-grow: 1;
+  }
+  .table_outer h3{
+    margin-top: 0;
+  }
+    .table-responsive {
+        min-height: .01%;
+        overflow-x: auto;
+    }
+  table thead>tr>th {
+      vertical-align: middle;
+      border: 1px solid #ccc;
+      color: rgba(0,0,0,0.7);
+      font-size: 14px;
+      padding: 10px 15px;
+      background: #eee !important;
+  }
+  table thead>tr>th.nowrap{
+    white-space: nowrap;
+  }
+  span.fa.fa-times-circle.fa-lg.closeBtn {
+      color: #d9534f;
+  }
+    table  tbody>tr>td {
+        border: 1px solid #ccc;
+        padding: 10px 15px;
+    }
+    table  tbody>tr>td  p{
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+    footer {
+      background-color: #233188;
+      padding: 15px;
+      text-align: center;
+  }
+  footer p{
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 0;
+  }
+  .mb_30{
+    margin-bottom: 30px;
+  }
+  textarea{
+    resize: none;
+  }
+  .cst_logos img {
+      height: 51px;
+      margin: 12px 0;
+      max-width: calc(33.33% - 12px);
+      object-fit: scale-down;
+  }
+  .cst_logos img:not(:last-child){
+    margin-right: 10px;
+  }
+  .cst_logos {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-left: auto;
+  }
+  .agent_details_outer p {
+      margin-bottom: 3px;
+  }
+  .agent_details_outer p a{
+    color: #233188;
+  }
+  .agent_details_outer {
+      display: block;
+      width: 100%;
+      float: left;
+      margin-bottom: 30px;
+  }
+  .agent_Details a.navbar-brand {
+      padding: 0;
+      margin-bottom: 10px;
+  }
+  .navbar-brand{
+    padding-left: 0;
+  }
+  .navbar-header {
+      margin: 0!important;
+  }
+  .inner-wrap .doc-title {
+    background: #f2f5fa;
+    font-size: 18px;
+    font-weight: bold;
+    color: #0f2334;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 7px;
+    margin-top: 20px;
+}
+.uploaded-files h4 {
+    font-size: 14px;
+    margin: 0 0 10px 0;
+}
+.upload-file-outer {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+.upload-file-outer a {
+    color: #333;
+    text-decoration: none;
+}
+.uploaded-status {
+    font-size: 14px;
+    color: #333;
+    padding: 7px 18px;
+    background: #f2f5fa;
+    border-radius: 20px;
+    display: inline-block;
+    margin: 20px 0 10px 0;
+    line-height: 25px;
+}
+.uploaded-files form .cs-input {
+    display: block;
+    margin: 30px 0px;
+    padding: 10px;
+    border: 2px dashed rgb(222, 222, 222);
+    text-align: center;
+    font-size: 20px;
+    position: relative;
+    color: rgb(222, 222, 222);
+}
+.uploaded-files form{
+  margin: 0;
+}
+.uploaded-files form .cs-input input{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  opacity: 0;
+}
+.uploaded-files form label {
+  background: url() #3fb39d no-repeat left center;
+    /*background-position-x: 12px;*/
+    border-radius: 5px;
+    padding: 7px 20px 7px 20px;
+    /*padding: 7px 20px 7px 35px;*/
+    font-size: 12px;
+    color: #fff;
+    display: inline-block;
+    cursor: pointer;
+}
+</style>
+<header>
+
+  <?php
+      
+      $logoUrl = '';
+
+      if(isset($agent) && !is_null($agent) && !empty($agent)) {
+
+           $agent_website_address = $this->config->item('AGENT_WEBSITE_ADDRESS')[$agent->agent_type];
+
+           $logoUrl      = isset($agent_website_address['logo']) ? $agent_website_address['logo'] : '';
+           $address      = isset($agent_website_address['address']) ? $agent_website_address['address'] : '';
+           $address_full = isset($agent_website_address['address_full']) ? $agent_website_address['address_full'] : '';
+           $phone        = isset($agent_website_address['phone']) ? $agent_website_address['phone'] : '';
+           $phone1       = isset($agent_website_address['phone1']) ? $agent_website_address['phone1'] : '';
+        
+      }
+    
+  ?>
+  <div class="container">
+    <div class="navbar-header"> 
+      <a class="navbar-brand" href="/">
+      <img src="<?= $logoUrl; ?>" alt="logo.png" class="logo_menu"></a>
+    </div> 
+    <div class="cst_logos">
+      <img src="https://crm.rateshop.ca/assets/images/sslbits.png" alt="logo.png" class="logo_menu"></a>
+      <img src="https://crm.rateshop.ca/assets/images/twofourhours.png" alt="logo.png" class="logo_menu"></a>
+      <img src="https://crm.rateshop.ca/assets/images/Google-Rating-5-star-1-622x388.png" alt="logo.png" class="logo_menu"></a>
+    </div>
+  </div>
+</header>
+<div class="table_outer">
+  <div class="container">
+      <h2 class="text-center">Client Document Upload Tool</h2>
+       <label>Hi <?php echo  $users->first_name; ?>.</label><br>
+       <label class="mb_30" id="up-doc-text">Please upload the documents requested below. If you dont have access to the document, you can choose not to upload anything for that specific category.</label> 
+
+    
+    <?php if($this->session->flashdata('success')): ?>
+        <div class="alert alert-success alert-dismissible">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <?php echo $this->session->flashdata('success'); ?></div>
+    <?php endif; ?>
+
+    <?php if($this->session->flashdata('danger')): ?>
+      <div class="alert alert-danger alert-dismissible">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      <?php echo $this->session->flashdata('danger'); ?></div>
+    <?php endif; ?>  
+<div class="row">
+       <div class="col-md-12 col-sm-12 col-xs-12 right-bor">    
+               <h3 id="up-doc-heanding">Uploaded Documents</h3>
+             
+            <div class="upload-docs-outer">
+             <!-- <table class="table-notes display nowrap" id="example8" style="width:100%">
+               <thead>-->
+               <!-- <tr> -->
+                
+        <!--        <th class="nowrap">S No.</th>
+               <th>Document Type</th>
+               <th>File</th>
+               <th>Upload Date & Time</th>
+               <th>Status</th> -->
+             <!--   <th>Document Name</th>
+
+               <th>Action</th> -->
+             <!-- </tr> -->
+<!--                </thead>
+               <tbody> -->
+<!--                   <?php 
+                 if(!empty($document_type101) && $document_type101->num_rows()>0){
+                   $document_type11 = $document_type101->result();
+                   $i = 0;
+                   foreach ($document_type11 as $data1) {
+                     $i++;
+                     ?>
+                     <tr>
+                     
+                       <td><p><?php echo $i;?></p></td>
+                       <td><?php echo $data1->file_name?> [<strong><?php echo $data1->type?></strong>]</td>
+                       <td> <a id="<?php echo $data1->documents?>" href="link_doc"><?php echo $data1->documents?></a></td>
+
+                      <td id="frmTd">
+                      <a href="<?php echo base_url('document/document_delete/' . $data1->id .'/'. $data1->user_id)?>" class="btn  btn-danger delete" data-toggle="tooltip" title="Delete" data-placement="left"><i class="fa fa-trash"></i></a>
+                    </td>
+                  </tr>
+                <?php }?>
+              <?php }?>  --> 
+
+
+               
+               <?php if ($Clients_pro_model->num_rows() > 0): ?>
+
+                <?php
+                $sr = 1;
+                 foreach ($Clients_pro_model->result() as $key => $value):
+                  $cnt = count((array)$value);
+                  $document_types = $value->document_types;
+                  // $document = $obj->getRecort('tbldocuments',['type' => $document_types,'user_id' => $value->user_id]);
+                  $document = $this->db->where(['type' => $document_types,'user_id' => $value->user_id])->get('tbldocuments')->result();
+                  // print_r($document);
+                  /*if($document->status==2){
+                    die;
+                  }*/
+
+                  
+
+                  // if((!empty($document)&& $document->status==2 ) || empty($document)){
+
+                  
+                 // echo "<pre>";print_r($value);die;
+                  ?>
+
+                  <div class="inner-wrap">
+                    <!-- <td><?= $sr++ ?></td> -->
+                    <div class="doc-title"><?= $value->document_types ?></div>
+                    <div class="uploaded-files">
+
+
+                    <div class="chooseFile currentTd<?php echo $sr;?>">
+                      <!-- <div class="left-outer"> -->
+                          <h4>Uploaded Documents:</h4>
+                        <?php if (!empty($document)): 
+                          foreach($document as $document){
+                        ?>
+                          <div class="upload-file-outer">
+                              <a id="<?php echo $document->documents?>" href="link_doc"><?php echo $document->documents?></a>
+                              <div class="uploaded-time time<?php echo $sr;?>">
+                                <?php echo (!empty($document))? $document->created_at:''; ?>
+                              </div>
+                        </div>
+                        <?php } else: ?>
+                            <form action="<?= base_url('document/customer_document_save2') ?>"
+                                  enctype="multipart/form-data" method="post" 
+                                  accept-charset="utf-8">
+                                  <input type="hidden" name="userid" value="<?= $value->user_id ?>">
+                                  <input type="hidden" name="type" value="<?= $value->document_types ?>">
+                                  <div class="cs-input">Drag and drop file here
+                                            <input id="<?php echo $sr;?>" type="file" class="chooseFileInput" name="documents[]" multiple="multiple" data-action="<?= base_url('document/customer_document_save') ?>?request_id=<?= $value->id ?>" data-time="time<?php echo $sr;?>" data-id = "uploaded<?php echo $sr;?>" data-td = "currentTd<?php echo $sr;?>">
+        </div>
+                                  <label for="<?php echo $sr;?>"><span>Upload File</span></label>
+
+                                     <div class="progress" style="display: none;">
+                                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                      <span class="sr-only">0% Complete</span>
+                                    </div>
+                                  </div>
+                         </form>
+                        <?php endif ?>
+                    </div>  
+                          <div class="uploaded-status">
+                          <span class="uploaded<?php echo $sr;?>">
+                            <?php echo (!empty($document))? 'Uploaded':'Pending'; ?>
+                          </span>
+                        </div>
+                 
+                   
+                  </div>
+                  </div>
+                  
+                <?php 
+              // }
+                endforeach ?>
+                 
+               <?php endif ?>
+           <!--  </tbody>
+          </table> -->
+          <div class="notify-agent">
+            <p>Once you have uploaded all your documents, click "Submit" to notify your Mortgage Agent.</p>
+            <button class="btn btn-primary" id="documentsToUpload">Submit</button>
+          </div>
+        </div> 
+       
+    </div> 
+<div class="col-md-4 col-sm-4 col-xs-12" style="display: none;"> 
+ <h3>Add Documents</h3>
+  <!-- <form> -->
+   <?php echo form_open_multipart(base_url('document/customer_document_save'));    ?>
+
+
+   <input type="hidden" name="userid" value="<?php echo $customer_property_detales->user_id;?>">
+
+   <!-- <input type="text" name="" value="<?php //echo $row->mortgage_type;?>"> -->
+   <!-- <input type="text" name="" value="<?php //echo $user_type;?>"> -->
+   <input type="hidden" name="type" value="<?php echo $customer_property_detales->application_purpose; ?>">
+   <label>Application Purpose: <?php  echo $customer_property_detales->application_purpose; ?></label>
+
+
+  <?php  if(!empty($doc_type) && $doc_type->num_rows()>0){
+           $doc_type1 = $doc_type->result(); ?>
+  <select class="form-control" id="doc_change_re" name="document_to_upload"  required>
+    <option value="">Choose Doc  Type...</option>
+    <?php 
+      foreach ($doc_type1 as $type) {
+       ?>
+       <option  value="<?php echo $type->doc_name;?>"><?php echo $type->doc_name;?></option>
+     <?php }?>
+   
+
+ </select>
+ <?php }?>
+ <div id="drop-zone">
+   <p>Drop files here...</p>
+   <div id="clickHere">or click here.. <i class="fa fa-upload"></i>
+    <input type="file" name="documents[]" id="file" multiple required />
+  </div>
+  <div id='filename'></div>
+</div>
+<!--  <input type="button"  name="submit" value="Upload"> -->
+<button type="submit" class="btn btn-info" >Upload</button>
+<!-- </form> -->
+<?php echo form_close(); ?>
+</div>
+<!-- <div class="col-md-12 mb_30">
+<label>Please let us know if you have any comments to share:</label><br>
+<textarea class="form-control" rows="4"></textarea>
+</div>
+<div class="col-md-12 ">
+  <input type="submit" name="" class="btn btn-success" value="Submit">
+</div> -->
+</div>
+
+</div>
+</div>
+<div class="agent_Details">
+  <div class="container">
+
+      <a class="navbar-brand" href="/">
+      <img src="<?= $logoUrl; ?>" alt="logo.png" class="logo_menu"></a>
+      <div class="agent_details_outer">
+        <?php 
+
+        $stafinto = $obj->getPreferredAgentData('tblusers',['email' => $users->email]); 
+        // echo "<pre>";print_r($stafinto);die;
+
+
+        ?>
+          <p><strong><?php echo ucfirst($stafinto->firstname). " ".ucfirst($stafinto->lastname); ?> | <?php echo ucfirst($stafinto->desigination); ?></strong></p>
+          <p><strong><?= $address; ?></strong></p>
+          <p><?= $address_full; ?> <?php if(!empty($phone)): ?> <a href="tel:<?= $phone; ?>"><?= $phone; ?></a> <?php endif;?> <?php if(!empty($phone1)): ?> <a href="tel:<?= $phone1; ?>">, <?= $phone1; ?></a> <?php endif;?> </p>
+      </div>
+  </div>
+</div>
+<footer>
+  <div class="container">
+    <p>Copyright 2018. All Rights Reserved. RateShop.ca</p>
+  </div>
+</footer>
+  <!-- Modal for preview docs start -->
+            <!-- Modal -->
+            <div id="myModal7" class="ui modal" role="dialog">
+             <div class="modal-dialog">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+               <div class="modal-header actions">
+                <button type="button" class="close ui black deny button" data-dismiss="modal" aria-label="close">&times;</button>
+                <h4 class="modal-title">File Preview</h4>
+              </div>
+              <div class="modal-body">
+                <iframe id="iframe01" class="iframeDoc" src=""  allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" frameborder="0">
+                </iframe>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- Modal for preview Docs close -->
+
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
+ <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+ <!-- File Upload Js -->
+ 
+ <script type="text/javascript">
+ 
+
+
+$(function(){
+  var table = document.getElementById("example8");
+  var tbodyRowCount = table.tBodies[0].rows.length;
+
+ 
+  if(tbodyRowCount == 0){
+
+       $("#example8").hide();
+       $("#up-doc-heanding").hide();
+       $("#up-doc-text").html("Thanks For Uploading Requested Documents");
+
+
+  }else{
+    $("#example8").show();
+  }
+})
+
+
+
+
+$('body').on('change','input[class=chooseFileInput]', function(e){
+        var $form = $(this).closest('form'); // You need to use standard javascript object here
+        var table = $(this).attr("data-td"); // You need to use standard javascript object here
+        var uploaded = $(this).attr("data-id"); // You need to use standard javascript object here
+        var uploadedTime = $(this).attr("data-time"); // You need to use standard javascript object here
+        var form = $form[0];
+        var formData = new FormData(form);
+        var percent = $('body').find('.percent');
+        var bar = $form.find('.bar');
+
+         $.ajax({
+
+           url:"<?= base_url('document/customer_document_save2') ?>",
+           method:"POST",
+           data:formData,
+           dataType:'JSON',
+           contentType: false,
+           cache: false,
+           processData: false,
+           beforeSend: function() {
+            
+               $form.find('.progress').show();
+               $form.find('.progress').find('span.sr-only').text('0%');
+
+          },
+           xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (evt) {
+                if (evt.lengthComputable) {
+                    var percentComplete = evt.loaded / evt.total;
+                    percentComplete = parseInt(percentComplete * 100);
+                     $form.find('.progress').find('span.sr-only').text(percentComplete + '%');
+                     $form.find('.progress .progress-bar').css('width', percentComplete + '%');
+                }
+            }, false);
+           
+            return xhr;
+          },
+           success:function(data)
+           {
+            var today = new Date();
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var dateTime = date+' '+time;
+            $(this).prop("readonly", true);
+            $('.'+table).css({'pointer-events':'none'});
+            $('.'+uploaded).text('Uploaded');
+            $('.'+uploadedTime).html(dateTime);
+
+            // if (data == 1) {
+                window.location.reload();
+
+            // }
+            
+            
+            if(data.success ==true){
+                   $form.find('.progress').hide();
+                   $form.find('.progress').find('span.sr-only').text('0%');
+                    $form.find('.progress .progress-bar').css('width','0%');
+                    form.reset();
+
+                
+
+            }else{
+                  $form.find('.progress').hide();
+                   $form.find('.progress').find('span.sr-only').text('0%');
+                    $form.find('.progress .progress-bar').css('width','0%');
+                    $form.find('body').find('#globalMessages').css('display', 'block');
+
+                 $('#globalMessages').html(data.message);
+
+        
+
+            }
+
+           }
+
+          });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  $(document).ready(function() {
+    $(".alert-success").fadeTo(2000, 500).slideUp(500, function() {
+      $(".alert-success").slideUp(500);
+    });
+
+     $(".alert-danger").fadeTo(2000, 500).slideUp(500, function() {
+      $(".alert-danger").slideUp(500);
+    });
+
+  });
+
+
+
+   $('.hide-menu').click(function(){
+      $('.admin').toggleClass('hide-sidebar');
+    });
+     $('#side-menu li').click(function(){
+      $(this).toggleClass('active');
+      $(this).closest('li').find("ul").toggleClass('in');
+    });
+
+     $('li.header-user-profile, li.timer-button, li.header-notifications').click(function(){
+      $(this).toggleClass('open');
+    });
+
+   
+
+
+
+   var dropZoneId = "drop-zone";
+   var buttonId = "clickHere";
+   var mouseOverClass = "mouse-over";
+   var dropZone = $("#" + dropZoneId);
+   var inputFile = dropZone.find("input");
+   var finalFiles = {};
+   $(function() {
+
+
+
+    var ooleft = dropZone.offset().left;
+    var ooright = dropZone.outerWidth() + ooleft;
+    var ootop = dropZone.offset().top;
+    var oobottom = dropZone.outerHeight() + ootop;
+
+    document.getElementById(dropZoneId).addEventListener("dragover", function(e) {
+     e.preventDefault();
+     e.stopPropagation();
+     dropZone.addClass(mouseOverClass);
+     var x = e.pageX;
+     var y = e.pageY;
+
+     if (!(x < ooleft || x > ooright || y < ootop || y > oobottom)) {
+      inputFile.offset({
+       top: y - 15,
+       left: x - 100
+     });
+    } else {
+      inputFile.offset({
+       top: -400,
+       left: -400
+     });
+    }
+
+  }, true);
+
+    if (buttonId != "") {
+     var clickZone = $("#" + buttonId);
+
+     var oleft = clickZone.offset().left;
+     var oright = clickZone.outerWidth() + oleft;
+     var otop = clickZone.offset().top;
+     var obottom = clickZone.outerHeight() + otop;
+
+     $("#" + buttonId).mousemove(function(e) {
+      var x = e.pageX;
+      var y = e.pageY;
+      if (!(x < oleft || x > oright || y < otop || y > obottom)) {
+       inputFile.offset({
+        top: y - 15,
+        left: x - 160
+      });
+     } else {
+       inputFile.offset({
+        top: -400,
+        left: -400
+      });
+     }
+   });
+   }
+
+   document.getElementById(dropZoneId).addEventListener("drop", function(e) {
+     $("#" + dropZoneId).removeClass(mouseOverClass);
+   }, true);
+
+
+   inputFile.on('change', function(e) {
+     finalFiles = {};
+     $('#filename').html("");
+     var fileNum = this.files.length,
+     initial = 0,
+     counter = 0;
+
+     $.each(this.files,function(idx,elm){
+      finalFiles[idx]=elm;
+    });
+
+     for (initial; initial < fileNum; initial++) {
+      counter = counter + 1;
+      $('#filename').append('<div id="file_'+ initial +'"><span class="fa-stack fa-lg"><i class="fa fa-file fa-stack-1x "></i><strong class="fa-stack-1x" style="color:#FFF; font-size:12px; margin-top:2px;">' + counter + '</strong></span> ' + this.files[initial].name + '&nbsp;&nbsp;<span class="fa fa-times-circle fa-lg closeBtn" onclick="removeLine(this)" title="remove"></span></div>');
+    }
+  });
+
+
+
+ })
+
+  function removeLine(obj)
+   {
+    inputFile.val('');
+    var jqObj = $(obj);
+    var container = jqObj.closest('div');
+    var index = container.attr("id").split('_')[1];
+    container.remove(); 
+
+    delete finalFiles[index];
+  //console.log(finalFiles);
+}
+
+ $(document).on('click','a[href = "link_doc"]',
+     function(e){
+      e.preventDefault();
+      let id = $(this).attr('id');
+      let pre_dos = $(this).closest("div.panel-head").find('input[name="pre_dos"]').val();
+          // let c_userid = $(this).closest("div.panel-head").find('input[name="c_userid"]').val();
+          // let doc_id = $(this).closest("div.panel-head").find('input[name="doc_id"]').val();
+           // $('#myModal3 input[name=c_userid1]').val(c_userid);
+           // $('#myModal3 input[name=doc_id1]').val(doc_id);
+           // $('#myModal3 input[name=c_userid2]').val(c_userid);
+           // $('#myModal3 input[name=doc_id2]').val(doc_id);
+           var baseURL1= "<?php echo base_url();?>";
+
+           let path = baseURL1+"/assets/documents/";
+           let new_dosc = path+id;
+           //alert(new_dosc);
+           //var value = "http://www.africau.edu/images/default/sample.pdf";
+
+         //   $('#myModal3 iframe[src=doccs]').val(new_dosc);
+         $("#iframe01").attr("src", new_dosc);
+
+         $('#myModal7').modal('show');
+
+       }); 
+
+
+$(document).ready(function(){
+  $('#documentsToUpload').on('click',function(){
+    var userid = $('input[name=userid]').val();
+    // alert(userid);
+    $.ajax({
+      url : "<?php echo base_url('document/sendEmail') ?>",
+      method: "post",
+      data: {
+        userid : userid
+      },success:function(response){
+        location.reload();
+      }
+    });
+  });
+});
+
+
+</script>
+
+
+
+
+
+
+
+
+
+public function customer_document_save2(){
+ 
+
+
+
+      //  $c_id = $this->input->post('id');
+    $userid = $this->input->post('userid');
+    //$agentid = $this->input->post('agent_id');
+    // $agentid = 1;
+
+      $preferred_agent = $this->db->get_where('tblusers',array('id'=>$userid))->row();
+      $agent_query = $this->db->get_where('tblstaff',array('staffid'=>$preferred_agent->preferred_agent));
+      $a_data =  $agent_query->row();
+      
+
+      
+
+  if(isset($_FILES['documents']) && !empty($_FILES['documents'])) {
+ // $this->db->delete('documents', array('user_id' => $user_id));
+    // $i=0;
+    // print_r($_FILES['documents']['name']);die();
+    for ($i=0;$i<count($_FILES['documents']['name']);$i++) {
+      // print_r($_FILES['documents']['name'][$i]);die();
+      $filename2 = isset($_FILES['documents']['name'][$i]) ? $_FILES['documents']['name'][$i]: "";
+      $_FILES['documents1']['name'] = $_FILES['documents'] ['name'][$i];
+      $_FILES['documents1']['type'] = $_FILES['documents'] ['type'][$i];
+      $_FILES['documents1']['tmp_name'] = $_FILES['documents'] ['tmp_name'][$i];
+      $_FILES['documents1']['error'] = $_FILES['documents'] ['error'][$i];
+      $_FILES['documents1']['size'] = $_FILES['documents'] ['size'][$i];
+      $fileName = $_FILES['documents'] ['name'][$i];
+      $images['file_name'] = $fileName;
+      $config['file_name'] = $fileName;
+      $image_path  = 'assets/documents/';
+      $config['upload_path']   = $image_path;
+      $config['allowed_types'] = 'jpeg|jpg|jgp|jpeg|png|docx|doc|pdf|txt';
+      $config['max_size']      = '10000000';
+      $config['max_width']     = '*';
+      $config['max_height']    = '*';
+      $new_name                = time() . '_' . $fileName;
+      $config['file_name']     = $new_name;
+
+      $this->load->library('upload', $config);
+      $this->upload->initialize($config);
+      if (!$this->upload->do_upload('documents1')) {
+       // echo 'fail';die();
+        echo '<pre>';
+            print_r($this->upload->display_errors());
+            exit();
+       // echo json_encode(array('status'=>false,'message'=>'Sorry! Try again, Error in image  upload.  '));
+       // echo "Sorry! Try again, Error in file upload. and allowed_types are  jpeg,jpg,png,Pdf,doc";
+        /*set_alert('danger', "Sorry! Try again, Error in file upload. and allowed_types are  jpeg,jpg,png,Pdf,doc");*/
+        $this->session->set_flashdata('danger', "Sorry! Try again, Error in file upload. and allowed_types are  jpeg,jpg,png,Pdf,doc");
+      }
+      else{
+        // echo 'success';die();
+        $data = array('upload_data' => $this->upload->data());
+        // print_r($data);die();
+        $add_doc = array(
+          'documents'       => $data['upload_data']['file_name'],
+          'file_name'     => $this->input->post('document_to_upload'),
+          'created_at'    => date("Y-m-d h:i:s"),
+          'type'    => $this->input->post('type'),
+          'user_id'      => $userid,
+          'is_uploaded'  => 1
+        ); 
+        //print_r($add_doc);exit();
+
+        $this->load->model('clients_pro_model');
+        $mortgage_type = 8;
+        $userid = $userid;
+        $data_to_edit = array('status'=> $mortgage_type,);
+
+        $q3 = $this->clients_pro_model->getResultsByCondtion('tblclients',array('userid' =>$userid));
+        $row1 =$q3->row();
+        
+        $customer_id = $row1->customer_id;
+
+        $q4 = $this->clients_pro_model->update('tblleads',array('id' =>$row1->leadid),$data_to_edit);
+
+        $q5 = $this->clients_pro_model->getResultsByCondtion('tblcontacts',array('userid' =>$userid));
+        $row_email = $q5->row();
+        $email_to_send = $row_email->email;
+        $number_to_send = $row_email->phonenumber;
+
+        $q1 = $this->clients_pro_model->getResultsByCondtion('tblleads_status',array('id'=>$mortgage_type));
+        $row_name = $q1->row();
+        $name = $row_name->name;
+
+        $message1 = 'Your Status has Change to '.$name;
+        $this->db->insert('tbldocuments',$add_doc);
+        //set_alert('success', 'Data Edit Successfully');
+
+        
+
+        $this->session->set_flashdata('success', 'Document Added Successfully');
+      
+      }
+      // $i++;
+    }
+
+    $this->load->helper('send_crm_email');
+    $requestCount = $this->db->where('user_id',$userid)->get('tbl_document_requests')->num_rows();
+    $docCount = $this->db->where('user_id',$userid)->get('tbldocuments')->num_rows();
+
+    $tbldocuments = $this->db->where('user_id',$userid)->order_by('id','desc')->get('tbldocuments')->result();
+    foreach($tbldocuments as $tbldocuments){
+      $docInfo[] = array(
+        'clientId'      => $userid,
+        'clientEmail'   => $preferred_agent->email,
+        'clientPhNumber'=> $preferred_agent->phone_number,
+        'customer_name' => $preferred_agent->first_name.' '.$preferred_agent->last_name, 
+        'upload_time'   => date("Y-m-d h:i:s"),
+        'document_name' => $tbldocuments->documents,
+        'document_type' => $tbldocuments->type,
+        'file_type'     => $tbldocuments->file_name,
+        'is_uploaded'   => $tbldocuments->is_uploaded,
+        'link'          => 'https://crm.rateshop.ca/admin/cl_test/client_snapshot/'.$userid
+      );
+    }
+
+
+    if($requestCount == $docCount){
+
+      if($a_data->email !='' || !empty($a_data->email)){
+        $to = $a_data->email;
+        // $to = 'devdeftsoft@gmail.com';
+        $subject = $preferred_agent->first_name.' '.$preferred_agent->last_name." has uploaded requested file document";
+
+
+        sendCrmEmails('html','document_upload_client_docs',['from' => 'no-reply@crm.rateshop.ca', 'to' => $to , 'subject' => $subject], ['docInfo' => $docInfo, 'customer_name'=>$preferred_agent->first_name.' '.$preferred_agent->last_name]);
+
+      }
+    }
+  }
+    
+
+    echo 1;
+
+
+
+    }

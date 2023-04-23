@@ -1,0 +1,61 @@
+﻿https://github.com/JuanDMeGon/laravel-payment-processing/tree/master/app
+
+https://github.com/dodistyo/ci-rest-jwt/blob/master/application/controllers/api/Auth.php
+
+https://github.com/JuanDMeGon/RESTful-API-with-Laravel-Definitive-Guide/tree/master/routes
+
+https://adevait.com/laravel/api-authentication-with-laravel-passport
+
+https://oauth2.thephpleague.com/authorization-server/which-grant/
+
+https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2#step-1-authorization-code-link
+
+https://stackoverflow.com/questions/33175909/copy-image-to-clipboard
+
+https://stackoverflow.com/questions/10673122/how-to-save-canvas-as-an-image-with-canvas-todataurl
+
+https://github.com/gopinav/
+
+https://dev.to/iamandrewluca/private-route-in-react-router-v6-lg5
+
+https://www.techiediaries.com/php-jwt-authentication-tutorial/
+
+https://github.com/firebase/php-jwt
+
+github.com/AashishChakravarty/Codeigniter-rest-jwt/blob/master/application/controllers/register
+
+https://www.twilio.com/blog/create-secured-restful-api-codeigniter-php
+
+https://www.smashingmagazine.com/2020/11/react-useref-hook/
+
+
+https://itnext.io/create-custom-fetch-hook-for-multiple-axios-instances-661a73701f73   ====> axios dyanmic
+
+
+https://dev.to/shivuser/creating-a-reusable-modal-component-inside-react-with-portals-38m1   ===> dynamic modal
+https://dev.to/adeyemiadekore2/how-to-build-a-reusable-and-responsive-modal-in-react-from-scratch-1o0f   ===> dynamic modal
+
+
+reactstrap ===> npm package
+
+
+https://forum.codeigniter.com/post-352591.html
+
+https://levelup.gitconnected.com/using-react-hook-form-with-material-ui-components-ba42ace9507a
+
+https://react-hook-form.com/api/useform/getvalues/
+
+
+//Autocomplete
+https://codesandbox.io/s/material-not-working-her-weg6e?file=/src/App.js:1620-1635
+
+
+
+//QR CODE
+https://stackoverflow.com/questions/67403923/how-do-i-generate-qr-code-from-url-in-javascript
+
+//Laravel Video Call
+http://laravel-video-call.herokuapp.com/agora-chat
+
+//React file upload
+https://codesandbox.io/s/2zzjljmnzn?file=/src/api/file.js

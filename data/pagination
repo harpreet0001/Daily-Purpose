@@ -1,0 +1,33 @@
+<?php 
+  function insertPagination($base_url, $cur_page, $number_of_pages, $prev_next=false) {
+     $ends_count = 1;  //how many items at the ends (before and after [...])
+     $middle_count = 2;  //how many items before and after current page
+     $dots = false;
+     ?>
+     <ul class="pagination">
+     <?php
+     if ($prev_next && $cur_page && 1 < $cur_page) {  //print previous button?
+          ?><li class="prev"><a href="<?php echo $base_url; ?>?page=<?php echo $cur_page-1; ?>">&laquo; Previous</a></li><?php
+     }
+     for ($i = 1; $i <= $number_of_pages; $i++) {
+          if ($i == $cur_page) {
+               ?><li class="active"><a><?php echo $i; ?></a></li><?php
+               $dots = true;
+          } else {
+               if ($i <= $ends_count || ($cur_page && $i >= $cur_page - $middle_count && $i <= $cur_page + $middle_count) || $i > $number_of_pages - $ends_count) { 
+                    ?><li><a href="<?php echo $base_url; ?>?page=<?php echo $i; ?>"><?php echo $i; ?></a></li><?php
+                    $dots = true;
+               } elseif ($dots) {
+                    ?><li><a>&hellip;</a></li><?php
+                    $dots = false;
+               }
+          }
+     }
+     if ($prev_next && $cur_page && ($cur_page < $number_of_pages || -1 == $number_of_pages)) { //print next button?
+          ?><li class="next"><a href="<?php echo $base_url; ?>?page=<?php echo $cur_page+1; ?>">Next &raquo;</a></li><?php
+     }
+     ?>
+     </ul>
+     <?php
+}
+?>

@@ -1,0 +1,3 @@
+chrome://flags/#block-insecure-private-network-requests
+
+Block insecure private network requests.  ==> make it disabled

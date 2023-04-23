@@ -1,0 +1,153 @@
+    #-----------------------------------------------------------------------------------------------
+      # RAW LEAD EMAIL START
+    #-----------------------------------------------------------------------------------------------
+
+     public function RawLeadEmails() {
+
+        die('yes');
+       
+        /*LOAD HELPER FILE*/
+        $this->load->helper('send_crm_email');
+       
+        // table fields
+        $fields = array(
+
+                     't_users.id',
+                     't_users.email',
+                     't_users.first_name',
+                     't_users.last_name',
+                     't_users.phone_number',
+                     't_users.created_at',
+                     't_leads.status',
+                     't_leads.raw_lead_emails',
+                     't_leads.raw_lead_email_status',
+                     't_clients.leadid',
+                     't_staff.staffid',
+                     't_staff.email as agent_email',
+                     't_staff.Slug'
+                    );
+
+        // days on which email is sent
+        $_EMAIL_DAYS = [
+
+                       '1day'    => 1,
+                       '3days'   => 3,
+                       '5days'   => 5,
+                       '10days'  => 10,
+                       '15days'  => 15,
+                       '30days'  => 30,
+                       '45days'  => 45,
+                       '60days'  => 60,
+                       '90days'  => 90,
+                       '120days' => 120,
+                       '180days' => 180
+                    ];        
+        
+        /*
+          * raw_lead_email_status ===> means all email not sent
+          * raw_lead_emails       ===> json array store which emails are sent
+          *  status : 13          ===> Lead is RAW LEAD
+        */
+        $this->db->select(implode(',',$fields));
+        $this->db->from('tblusers as t_users');
+        $this->db->join('tblclients as t_clients','t_clients.customer_id = t_users.id','inner');
+        $this->db->join('tblleads as t_leads','t_leads.id = t_clients.leadid','inner');
+        $this->db->join('tblstaff as t_staff','t_staff.staffid = t_users.preferred_agent','inner');
+        $this->db->where(['t_leads.status' => 13, 't_leads.raw_lead_email_status' => 0]);
+        $this->db->where('t_users.email','test878778@yopmail.com');     
+        $raw_leads_Query = $this->db->get();
+
+        if($raw_leads_Query->num_rows() > 0) {
+
+            $raw_leads = $raw_leads_Query->result();
+
+            $currentTimeStamp = time();
+            $currentDate      = date("Y-m-d H:i:s");
+            $currentDateTime  = date_create($currentDate);
+
+            foreach ($raw_leads as $key => $raw_lead) {
+
+                if(!$raw_lead->raw_lead_email_status)
+                {
+                    $raw_lead_emails = json_decode($raw_lead->raw_lead_emails);
+
+                    if(!is_array($raw_lead_emails))
+                    {
+                        $raw_lead_emails = array();
+                    }
+
+                    $leadCreationDate     = $raw_lead->created_at;
+                    $leadCreationDateTime = date_create($leadCreationDate);
+                    $interval             = date_diff($leadCreationDateTime,$currentDateTime);
+                    $days                 = (int)$interval->format('%a');
+
+                    $status = false;
+
+                    foreach ($_EMAIL_DAYS as $day_name => $day_value) {
+
+                        // check if days differnce greater than email days and email not sent yet  
+                        if($days == $day_value && !in_array($day_name,$raw_lead_emails)) {
+
+                            $status = true;
+
+                            $raw_lead_emails[] = $day_name;
+
+                            $subject = $day_value.' Day– Raw Lead no application-'.$raw_lead->id;
+
+                            $application_link = null;
+
+                            if($raw_lead->staffid==1)
+                            {
+                                $application_link= 'https://www.rateshop.ca/apply?u='.$raw_lead->staffid;
+                            }
+                            else
+                            {
+                                $application_link= 'https://www.rateshop.ca/'.$raw_lead->Slug.'/apply?u='.$raw_lead->staffid;
+                            }
+
+                            //Send Email
+                            sendCrmEmails(
+                              'html',
+                              'raw_lead_email_template',
+                              [
+                                'from'    =>  $raw_lead->agent_email,
+                                'to'      =>  $raw_lead->email,
+                                'subject' =>  $subject
+                              ],
+                              [
+                                  'raw_lead' => $raw_lead,
+                                  'day'      => $day_value,
+                                  'application_link' => $application_link
+                              ]
+                            );
+
+                        }
+                    }
+
+                    if($status) {
+
+                        $data = array();
+                        
+                        // check if all emails sent or not
+                        if(count($raw_lead_emails) == count($_EMAIL_DAYS))
+                        {
+                            $data['raw_lead_email_status'] = 1;
+                        }
+
+                        $raw_lead_emails = json_encode(array_values($raw_lead_emails),true);
+
+                        $data['raw_lead_emails'] = $raw_lead_emails;
+
+                        $this->db->where('id',$raw_lead->leadid)->update('tblleads',$data); 
+                    }
+
+                }
+            }
+        }
+     }
+
+
+
+    #-----------------------------------------------------------------------------------------------
+      # RAW LEAD EMAIL END
+    #-----------------------------------------------------------------------------------------------

@@ -1,0 +1,5 @@
+﻿$this->db->select('id,first_name,last_name,email,phone_number,mortgage_type,closing_date')
+                                               ->where("date_format(coalesce(STR_TO_DATE(closing_date, '%Y-%m-%d'),STR_TO_DATE(closing_date, '%m/%d/%Y')),'%Y-%m-%d') >",$today_date)
+                                               ->where("date_format(coalesce(STR_TO_DATE(closing_date, '%Y-%m-%d'),STR_TO_DATE(closing_date, '%m/%d/%Y')),'%Y-%m-%d') <=",$upcoming_date)
+                                               ->from('tblusers')
+                                               ->get();    

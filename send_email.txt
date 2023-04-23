@@ -1,0 +1,58 @@
+sendCrmEmails(
+               'html', //text
+               'pipeline_status_changed_email', 
+               [
+                  'from'    => $from,
+                  'to'      => $to, 
+                  'subject' => $subject
+               ],
+               [
+                  'body'   => $message,
+                  'agent'  => $agent_info
+               ]
+             );
+
+
+
+function sendCrmEmails($mailtype,$templateName,$info,$templateData = []){
+
+
+
+        $ci =& get_instance();
+   
+
+        $to = $info['to'];
+        $subject = $info['subject'];
+        $message = ($mailtype=='html' && !empty($templateData)) ? $ci->load->view('admin/emails/sendcrmemails/'.$templateName, $templateData, true) : $templateName;
+        /*if ($_SERVER['REMOTE_ADDR']==='49.249.236.30') {
+            # code...
+         echo "<pre>";print_r($message);die;  
+        }
+*/       
+        $headers = '';
+        if($mailtype=="html"){
+
+            $headers = "MIME-Version: 1.0" . "\r\n";
+            $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+            
+        }
+
+        $headers .= "From: ".$info['from']. "\r\n";
+
+        if(array_key_exists('cc', $info) && is_array($info['cc'])){
+            $append_cc = '';
+            foreach ($info['cc'] as $key => $cc) {
+                $append_cc .= $cc.",";
+            }
+
+            $headers .= 'Cc: '.$append_cc. "\r\n";
+           
+        }
+        if(isset($info['bcc'])){
+             $headers .= 'Bcc: '.$info['bcc']. "\r\n";
+        }
+
+        return (mail($to,$subject,$message,$headers))?true:false;
+        // return sendNotifictionWithEmail($mailtype,$to,$info['from'],$subject,$message,'');
+    
+}

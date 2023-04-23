@@ -1,0 +1,468 @@
+﻿$(document).ready(function() {
+
+    endLoader();
+    /*
+        stop modal to close when click outside
+    */
+    $('.modal').modal({
+
+        backdrop : 'static',
+        keyboard : false,
+        show     : false
+    });
+
+    /*
+      *  Loader
+    */
+    function callLoader() {
+    $('.cs_loader').css('display', 'block');
+    }
+    function endLoader() {
+        $('.cs_loader').css('display', 'none');
+    }
+
+    /*
+     *common functions Start
+    */
+    /*===============AJAX=================================*/
+    function dynamicAjax(fileName , reqType , dataObj)
+    {
+        return new Promise((resolve,reject) => {
+
+            $.ajax({
+                url     : fileName,
+                type    : reqType,
+                async   : true,
+                data    : dataObj,
+                beforeSend: function() {
+                    callLoader();
+                },
+                complete: function() {
+                    endLoader();
+                },
+                dataType:'json',
+                success : function (response)  { resolve(response); },
+                error   : function (response)  { reject(response);  }
+            });
+
+        });
+    }
+    /*=====================================================================*/
+
+    /*==================Initial-Datatable===========================*/
+    function initDataTable(id) {
+
+        let dt = $('body #'+id).DataTable({
+            // searching: false,
+            // paging: true,
+             bSort: false,
+            // responsive: true,
+            // fixedHeader: {
+            //     header: true,
+            // },
+            // pageLength: '100',
+            // dom: 'Bfrtip'
+        });
+
+        return dt;
+
+    }
+    /*=====================================================================*/
+
+    /*
+     *common functions End
+    */
+
+
+    /*Init Datatable*/
+  /*=====================================================================*/
+     let team_lead_table = initDataTable('team_lead_table');
+
+  /*=====================================================================*/
+
+    /*Saving New Team Lead*/
+    /*=====================================================================*/
+    let teamLeadValidator = $("#team_lead_modal_form").validate({
+
+      rules: {
+          
+          team_name              : { required: true,minlength: 1,maxlength: 200 }, 
+          team_lead_id           : { required: true },
+          "team_members[]" : { required: true },
+
+      },
+
+      submitHandler: function(form) {
+
+        let event = window.event;
+        event.preventDefault();
+         
+        let action = $('input[name="action"]').val();
+
+        if(action == 'SAVE') {
+
+            let url = configUrl['add-team'];
+
+            dynamicAjax(url,'POST',$(form).serialize()).then((response) => {
+
+                if(response.status) {
+
+                    let link = configUrl['profile_url']+response.data.team_lead_id;
+
+                    let NEW_ROW_DATA  = [
+                           
+                           response.data.team_name,
+                           `<a href="${link}" target="_blank">${response.data.firstname} ${response.data.lastname}</a>`,
+                           `<a href="${link}" target="_blank">${response.data.email}</a>`,
+                           response.data.phonenumber,
+                            `<button type="button" class="btn btn-primary btn_show_team_members" data-team-id="${response.data.team_id}">
+                            Members <span class="badge badge-light">${(JSON.parse(response.data.team_members)).length}</span>
+                          </button>`,
+                           `<a href="#" class="btn btn-xs btn-warning btn_edit_team"  data-team-id="${response.data.team_id}">Edit</a>
+                           <a href="#"  class="btn btn-xs btn-danger btn_delete_team" data-team-id="${response.data.team_id}">Delete</a>`
+                    ];
+
+                    team_lead_table.row.add(NEW_ROW_DATA).draw();
+
+                    // $('select#team_lead_id option[value="'+response.data.team_lead_id+'"]').prop("disabled", true);
+
+                    $('#team_lead_modal').modal('hide');
+
+                     swal({
+                        title  : "Team",
+                        text   : response.message,
+                        button : "Ok",
+                        showConfirmButton : false,
+                        icon : "success"
+                    });
+
+                }
+
+            }).catch((response) => {
+                     
+                   let responseData = response.responseJSON;
+
+                    if(responseData.errors) {
+
+                        teamLeadValidator.showErrors(responseData.errors);
+                    }
+                    else if(responseData.message) { 
+
+                        swal({
+                            title  : "Team",
+                            text   : response.message,
+                            button : "Ok",
+                            showConfirmButton : false,
+                            icon : "warning"
+                        });
+                    }
+            });
+
+        }
+        else if(action == 'UPDATE') {
+           
+           console.log({currentTr});
+            let url = configUrl['teams-update'];
+            let team_id  = $('input[name="team_id"]').val();
+
+            url = url.replace('{num}',team_id);
+
+            dynamicAjax(url,'POST',$(form).serialize()).then((response) => {
+
+                $('#team_lead_modal').modal('hide');
+
+                currentTr.children('td:first').text(`${response.data.team_name}`);
+                currentTr.children('td:nth-child(5)').find('button span').text((JSON.parse(response.data.team_members)).length);
+
+                 swal({
+                        title  : "Team",
+                        text   : response.message,
+                        button : "Ok",
+                        showConfirmButton : false,
+                        icon : "success"
+                });
+
+                // window.location.reload();
+
+            }).catch((response) => {
+                     
+                    let responseData = response.responseJSON;
+
+                    if(responseData.errors) {
+
+                        teamLeadValidator.showErrors(responseData.errors);
+                    }
+                    else if(responseData.message) { 
+
+                        swal({
+                            title  : "Team",
+                            text   : response.message,
+                            button : "Ok",
+                            showConfirmButton : false,
+                            icon : "warning"
+                        });
+                    }
+            });
+            
+        }
+
+      }
+
+    });
+    /*=====================================================================*/
+
+        /*Add New Team Lead*/
+    /*=====================================================================*/
+    $(document).delegate('#btn_add_team','click',function() {
+        
+        teamLeadValidator.resetForm();
+        $('select#team_lead_id').prop("disabled", false);
+        $('select#team_lead_id').val('').select2({ placeholder: "Choose",width: "100%"}).trigger('change');
+        $('select#team_members_list').val('').select2({ placeholder: "Choose",width: "100%"}).trigger('change');
+        $('#team_lead_modal_form').trigger('reset');
+
+        $('#team_lead_modal .modal-title').text('Add Team Lead');
+        $('#team_lead_modal input[name="action"]').val('SAVE');
+        $('#team_lead_modal input[name="team_lead_id"]').val('');
+        $('#team_lead_modal button[type="submit"]').text('SAVE');
+
+        $('#team_lead_modal').modal('show');
+    });
+  /*=====================================================================*/
+
+
+   /*Delete Milestone*/
+  /*=====================================================================*/
+    $(document).delegate('.btn_delete_team','click',function(event) {
+           event.preventDefault();
+
+        if (confirm('Are you sure to delete this record ?')) {
+
+            let team_id = $(this).attr('data-team-id');
+            let url = configUrl['teams-delete'].replace('{num}',team_id);
+
+            dynamicAjax(url,'POST',{team_id}).then((response) => {
+
+                team_lead_table.row($(this).parents('tr')).remove().draw(false);
+
+                $('select#team_lead_id option[value="'+team_lead_id+'"]').prop("disabled", false);
+
+                swal({
+                        title  : "Team",
+                        text   : response.message,
+                        button : "Ok",
+                        showConfirmButton : false,
+                        icon : "success"
+                    });
+
+            }).catch((e) => {
+
+                  console.log(e);
+            });
+        }
+
+        return false;
+    });
+    /*=====================================================================*/
+
+    let currentTr = null;
+    /*Edit Team Lead*/
+    /*=====================================================================*/
+        $(document).delegate('.btn_edit_team','click',function(event) {
+           
+            currentTr = $(this).parents('tr');
+            event.preventDefault();
+            teamLeadValidator.resetForm();
+
+            let team_id = $(this).attr('data-team-id');
+            let url = configUrl['teams-edit'].replace('{num}',team_id);
+
+            dynamicAjax(url,'GET',{}).then((response) => {
+
+                console.log(response);
+
+                if(response.status){
+
+
+                    let record = response.data;
+                    
+                    let team_id            = parseInt(record.team_id);
+                    let team_lead_id       = parseInt(record.team_lead_id);
+                    let team_members = JSON.parse(record.team_members);
+
+                    $('input#team_name').val(record.team_name);
+
+                    $('select#team_lead_id').val(team_lead_id).change().prop("disabled", true);
+                    $('select#team_members_list').val(team_members).select2({ placeholder: "Choose elements",width: "100%"});
+                    $('select#team_members_list option[value="'+team_lead_id+'"]').prop('disabled',true).prop("selected", false);
+                    $('select#team_members_list').trigger('change');
+                    
+                    $('#team_lead_modal .modal-title').text('Edit Team Lead');
+                    $('#team_lead_modal input[name="action"]').val('UPDATE');
+                    $('#team_lead_modal input[name="team_id"]').val(team_id);
+                    $('#team_lead_modal button[type="submit"]').text('UPDATE');
+                    $('#team_lead_modal').modal('show');
+                }
+
+            }).catch((e) => {
+
+                 console.log(e);
+            });
+
+           return false;
+        });
+    /*=====================================================================*/
+
+    /*=====================================================================*/
+    $('#team_lead_id').on('change', function (e) {
+
+          $('select#team_members_list option').prop('disabled',false);
+
+          $('select#team_members_list option[value="'+$(this).val()+'"]').prop('disabled',true).prop("selected", false);
+          $('select#team_members_list').trigger('change');
+    });
+    /*=====================================================================*/
+
+
+    /*=====================================================================*/
+            /*SHOW TEAM LEAD MEMBERS*/
+
+    $(document).delegate('.btn_show_team_members','click',function(e) {
+
+        e.preventDefault();
+
+        let team_id = $(this).attr('data-team-id');
+        let url = configUrl['teams-members'].replace('{num}',team_id);
+
+        dynamicAjax(url,'GET',{}).then((response) => {
+
+            if(response.status){
+                   
+                let team = response.data.team;
+                let team_members = response.data.team_members;
+
+                let $modalEle = $('#team_members_modal');
+                if(team) {
+                    $modalEle.find('.modal-header .modal-title').text(team.team_name);
+                }
+
+                if(team_members) {
+
+                    let HTML = '';
+                    $.each(team_members,function(index,team_memeber) {
+
+                         let link = configUrl['profile_url']+team_memeber.staffid;
+
+                         HTML += `<tr>
+                                      <td><a href="${link}" target="_blank">${team_memeber.firstname} ${team_memeber.lastname}</a></td>
+                                      <td>${team_memeber.email}</td>
+                                      <td>${team_memeber.phonenumber}</td>
+                                  </tr>`;
+                    });
+
+                    $modalEle.find('table#table_team_lead_members tbody').html(HTML); 
+                }
+
+                $modalEle.modal('show');
+            }
+
+        }).catch((e) => {
+
+            console.log(e);
+        });
+
+        return false;
+     });      
+    /*=====================================================================*/
+
+
+    /*=====================================================================*/
+
+    if($('#my_team_table').length) {
+        var my_team_table = initDataTable('my_team_table');
+    }
+    /*=====================================================================*/      
+
+
+    /*=====================================================================*/
+
+        let selectTeamEle = $('select[name="my-team"]');
+
+        if(selectTeamEle.length > 0) {
+
+            let selectVal = selectTeamEle.val();
+
+            let clients_url = configUrl['clients_url'];
+            clients_url = clients_url.replace('{team_name_slug}',selectTeamEle.find(":selected").attr('data-team-name-slug'));
+            $('#cur_team').html(`<a href=${clients_url} target="_blank">${selectTeamEle.find(":selected").attr('data-team-name-slug')}</a>`);
+
+
+            if(selectVal !== '') {
+                  
+                getTeamMembers(selectVal);
+            }
+
+            selectTeamEle.on('change',function(e) {
+
+                let team_id = $(this).val();
+
+                getTeamMembers(team_id);
+         
+            });
+        }
+    /*=====================================================================*/
+    
+    /*=====================================================================*/    
+
+        function getTeamMembers(teamId) {
+           
+            let url = configUrl['teams-members'].replace('{num}',teamId);
+
+            dynamicAjax(url,'GET',{}).then((response) => {
+
+                if(response.status) {
+                  
+                    my_team_table.clear();
+
+                    let clients_url = configUrl['clients_url'];
+
+                    clients_url = clients_url.replace('{team_name_slug}',response.data.team.team_name_slug);
+                    $('#cur_team').html(`<a href=${clients_url} target="_blank">${response.data.team.team_name_slug}</a>`);
+
+                    $.each(response.data.team_members,function(index,team_member) {
+
+                        let NEW_ROW_DATA  = [
+                               
+                            team_member.firstname+' '+team_member.lastname,
+                            `<a href=${configUrl.profile_url}${team_member.staffid} target="_blank">${team_member.email}</a>`,
+                            team_member.phonenumber,
+                            team_member.lead_count,
+                            team_member.total_loan_amount,
+                            team_member.broker_commitment_value,
+
+                        ];
+
+                        my_team_table.row.add(NEW_ROW_DATA);
+
+                    })
+
+                    my_team_table.draw();
+
+                }
+
+            }).catch((e) => {
+
+                console.log(e);
+            });
+
+            return false;
+        }
+
+    /*=====================================================================*/
+
+
+  
+    
+
+
+});
